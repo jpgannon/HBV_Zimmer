@@ -1,0 +1,10 @@
+HBV_var_init_cond.R is a version of HBV that takes parameters, initial conditions, and data as inputs use this to run HBV. 
+
+motecarlo_HBV_params_and_ic.R runs hbv with the data you give it and chooses random parameters and initial conditions, it spits out the NSE, parameters, and initial conditions for each run (but no data). It is intended to be used as part of a monte carlo.
+
+ParameterizeNDC.R contains code to run a monte carlo parameterization and then output the modeled and measured discharge from the best run. It uses the above .R files to do this.
+
+Plots for NDC.Rmd has code to compare several parts of the model
+as of Dec 12 it has the parameters and initial conditions from the 500,000 run montecarlo
+The RMD runs the model with the parameters and initial conditions defined and then plots
+This file also has descriptions of the different model outputs
