@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(tidyverse)
+source("HBV_var_init_cond.R")
+```
+
+Below are the NSE, parameters, and initial conditions from a 500,000 run monte carlo parameterization in the ParameterizeNDC.R file
+```{r}
+NSE <- 0.70
+
+params <- c(3.019609e+02, 4.028145e+00, 3.223260e-01, 7.908681e-01, 4.296827e-01, 4.072993e+00,
+ 3.271594e-01, 1.825658e-01, 1.031739e-03, 2.579748e+01, 3.818635e+00, 1)
+
+initcond <- c(0.000000e+00 , 6.883549e+00, 5.937273e+01, 0.000000e+00, 0.000000e+00, 2.778988e+02)
+```
+
+Below reads and preps the data, then runs the model using the conditions above
+```{r}
+#read data
+Weather <- read_csv("ArborRelay_Weather_Daily.csv")
+NDCQ <- read_csv("NDC_Q_2021_2022_daily.csv")
+
+#join together for model input
+inputdatNDC <- inner_join(Weather, NDCQ, by = "datetime")|>
+  select(datetime, P = Rainfall_mm_daily, 
+         Temp = AirTemp_C_Mean, PET = PET_Tmean_mm_day,
+         Qobs = Streamflow_mm_day)
+
+HBVout <- HBV(pars = params, initcond =  initcond, 
+              P = inputdatNDC$P,
+              Temp = inputdatNDC$Temp,
+              PET = inputdatNDC$PET)
+
+#add obs discharge
+HBVout <- bind_cols(HBVout, Qobs = inputdatNDC$Qobs, datetime = inputdatNDC$datetime)
+```
+
+HBV out columns and what they are
+q = discharge
+qs = rapid flow (overland, etc)
+qi = interflow (upper storage zone)
+qb = baseflow (lower storage zone)
+Storage = total storage (soil + S1 + S2)
+SWE = Snow Water Equivalent
+AET = Actual ET
+SF = Snowfall
+S1 = Upper Zone Storage
+S2 = Lower Zone Storage
+Soil = Soil Moisture storage
+w = water input, precip and snow
+P = Precip
+PET = PET
+Temp = Temp
+Qobs = Observed Discharge
+
+```{r}
+#plot discharge 
+HBVout |>
+  ggplot(aes(x = datetime, y = Qobs, color = "Q observed"))+
+  geom_line()+
+  geom_line(aes(y = q, color = "Q modeled"))+
+  theme_classic()+
+  ggtitle(paste("NSE =", NSE))
+```
+
+```{r}
+HBVout |>
+  ggplot(aes(x = datetime, y = soil, color = "Soil storage"))+
+  geom_line()+
+  geom_line(aes(y = S1, color = "Upper Storage"))+
+  geom_line(aes(y = S2, color = "Lower Storage"))+
+  theme_classic()+
+  ggtitle(paste("NSE =", NSE))
+```
+```{r}
+HBVout |>
+  ggplot(aes(x = datetime, y = soil))+
+  geom_line()+
+  ggtitle("Soil Storage")+
+  theme_classic()
+```
+```{r}
+HBVout |>
+  ggplot(aes(x = datetime, y = S1))+
+  geom_line()+
+  ggtitle("Upper Storage")+
+  theme_classic()
+```
+```{r}
+HBVout |>
+  ggplot(aes(x = datetime, y = S2))+
+  geom_line()+
+  ggtitle("Lower Storage Storage")+
+  theme_classic()
+```
