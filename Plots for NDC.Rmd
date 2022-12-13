@@ -39,6 +39,9 @@ HBVout <- HBV(pars = params, initcond =  initcond,
 
 #add obs discharge
 HBVout <- bind_cols(HBVout, Qobs = inputdatNDC$Qobs, datetime = inputdatNDC$datetime)
+
+#remove first row because model starts at timestep 2
+HBVout <- HBVout[-1,]
 ```
 
 HBV out columns and what they are
