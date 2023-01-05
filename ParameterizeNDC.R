@@ -24,7 +24,7 @@ inputdatNDC <- inner_join(Weather, NDCQ, by = "datetime")|>
 #         Qobs = Streamflow_mm_day)
 
 #run montecarlo and save parameters and initial conditions of best run
-runs <- 5000
+runs <- 500000
 
 for(x in 1:runs){
     #run HBV with ramdom params and initial conditions, get NSE val

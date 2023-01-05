@@ -17,7 +17,7 @@
 # Code written by K. McGuire, March 2012
 # Translated to R by J.P. Gannon, March 2021
 
-HBV <- function(pars,P,Temp,PET,routing = 0){
+HBV <- function(pars,P,Temp,PET,routing){
   #[q,qs,qi,qb,Storage,SWE,AET,SF,S1,S2,soil,w]
   # [q,qs,qi,qb,Storage,SWE,AET,SF,S1,S2,soil,w] = HBV(pars,P,T,PET)
   #
@@ -72,7 +72,7 @@ HBV <- function(pars,P,Temp,PET,routing = 0){
   k2    <- pars[9]            #Recession constant (lower storage)
   UZL   <- pars[10]           #Threshold for shallow storage
   PERC  <- pars[11]           #Percolation, max flow from upper to lower storage
-  MAXBAS<- routing 
+  MAXBAS<- routing #pars[12] 
   
   ## INITIALISE VARIABLES
   AET     <- rep(0, length(P))       #Actual evap, mm/d
@@ -89,13 +89,13 @@ HBV <- function(pars,P,Temp,PET,routing = 0){
   Q_SLZ   <- rep(0, length(P))       #unrouted lower zone flow = groundwater flow, mm/d
   Qgen    <- rep(0, length(P))       #Streamflow sources not routed through channel network
   
-  #Initial conditions
-  SWE[1] <- pars[12] 
-  SUZ    <- pars[13]      #Initial upper zone storage
-  SLZ    <- pars[14]      #Initial lower zone storage
-  SP     <- pars[15]      #initial value for simulated snowpack 
-  WC     <- pars[16]      #Initial liquid water in snowpack 
-  SM     <- pars[17]      #Initial soil storage content
+  SWE[1] <- 0 
+  SUZ    <- 0       #Initial upper zone storage
+  SLZ    <- 0       #Initial lower zone storage
+  SP     <- 0       #initial value for simulated snowpack 
+  WC     <- 0       #Initial liquid water in snowpack 
+  SM     <- FC      #Initial soil storage content
+  
   
   ## --------- TIME LOOP ------------
   for (t in 2:length(P)){
@@ -282,6 +282,5 @@ HBV <- function(pars,P,Temp,PET,routing = 0){
      P       ,
      PET     ,
      Temp)
-
 
 }
