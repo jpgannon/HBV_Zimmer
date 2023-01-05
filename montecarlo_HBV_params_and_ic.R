@@ -11,11 +11,11 @@ hbv_MC <- function(P, Temp, PET, Qobs){
     SFCF  <- runif(1, min = 0.4  , max = 1.2)  #Snowfall correction factor
     TT    <- runif(1, min = -1.5 , max = 1.2)  #Threshold temperature
     CFMAX <- runif(1, min = 1    , max = 8)    #Degree-day factor
-    k0    <- runif(1, min = 0.05 , max = 0.5)  #Recession constant (upper storage, near surface)
-    k1    <- runif(1, min = 0.01 , max = 0.3)  #Recession constant (upper storage)
-    k2    <- runif(1, min = 0.001, max = 0.15) #Recession constant (lower storage)
+    k0    <- runif(1, min = 0.05 , max = 1)#max = 0.5)  #Recession constant (upper storage, near surface)
+    k1    <- runif(1, min = 0.01 , max = 1)#, max = 0.3)  #Recession constant (upper storage)
+    k2    <- runif(1, min = 0.001, max = 1)#max = 0.15) #Recession constant (lower storage)
     UZL   <- runif(1, min = 0    , max = 70)   #Threshold for shallow storage
-    PERC  <- runif(1, min = 0    , max = 4)    #Percolation, max flow from upper to lower storage
+    PERC  <- runif(1, min = 0    , max = 10) #max = 4)    #Percolation, max flow from upper to lower storage
     MAXBAS<- rep(1)
     
     c(FC, beta, LP, SFCF, TT, CFMAX, k0, k1, k2, UZL, PERC, MAXBAS)
